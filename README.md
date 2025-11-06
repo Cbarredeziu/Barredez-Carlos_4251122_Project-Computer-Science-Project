@@ -38,3 +38,13 @@ Currently in Conception Phase
 -  Evaluating hardware options for edge deployment
 -  Prototyping vision model for occupancy detection
 -  Next: Simulated data ingestion and API scaffolding
+
+## Risk Considerations
+This project involves real-time computer vision for parking occupancy detection. While the system is designed for high accuracy and scalability, the following technical risk has been identified:
+### Detection Reliability Risk
+- Description: The accuracy of occupancy detection depends heavily on the trained vision model and environmental conditions (e.g., lighting, occlusion, weather). In some cases, the camera feed may fail to detect vehicles or parking bay boundaries correctly.
+- Impact: Misclassification of occupancy status can lead to incorrect billing, unreliable heatmaps, and reduced trust in system performance.
+- Mitigation:
+- Train models on diverse datasets covering multiple urban scenarios.
+- Validate detection performance across different lighting and weather conditions.
+- Implement fallback logic for uncertain detections and allow for model retraining based on field data
