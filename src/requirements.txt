@@ -1,0 +1,7 @@
+opencv-python>=4.8.0
+numpy>=1.24.0
+pandas>=2.0.0
+ultralytics>=8.0.0  # For YOLO object detection
+torch>=2.0.0        # Required by ultralytics
+pillow>=10.0.0      # Required for image processing
+matplotlib>=3.7.0   # For visualization
