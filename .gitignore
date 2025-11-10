@@ -1,0 +1,40 @@
+# PyTorch model files
+*.pt
+*.pth
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+
+# Output files (optional - uncomment if you don't want to track these)
+# *.csv
+# *.json
+# *.png
+# *.jpg
+# *.jpeg

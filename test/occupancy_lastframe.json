@@ -1,0 +1,30 @@
+{
+  "ts_utc": "2025-11-10T13:32:19.362570Z",
+  "frame": 1,
+  "spots": {
+    "P1": {
+      "status": "free",
+      "overlap": 0.0
+    },
+    "P2": {
+      "status": "occupied",
+      "overlap": 0.984
+    },
+    "P3": {
+      "status": "free",
+      "overlap": 0.301
+    },
+    "P4": {
+      "status": "occupied",
+      "overlap": 0.988
+    },
+    "P5": {
+      "status": "free",
+      "overlap": 0.204
+    },
+    "P6": {
+      "status": "free",
+      "overlap": 0.0
+    }
+  }
+}
