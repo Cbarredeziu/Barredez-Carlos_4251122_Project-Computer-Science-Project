@@ -1,4 +1,0 @@
-Run:
-& C:/Users/sword/AppData/Local/Programs/Python/Python313/python.exe c:/Users/sword/OneDrive/Escritorio/Barredez-Carlos_4251122_Project-Computer-Science-Project/src/main.py --video test\parkingplace_cars1.png 
-edit:
-
