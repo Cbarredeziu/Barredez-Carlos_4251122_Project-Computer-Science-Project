@@ -1,50 +1,154 @@
-# Real-Time Parking Occupancy Detection and Dynamic Pricing via Embedded Vision Systems
+# Real-Time Parking Occupancy Detection System
+
+## Overview
+This project implements a computer vision-based parking occupancy detection system that can monitor parking spaces in real-time using video feeds or static images. The system uses YOLO (You Only Look Once) object detection to identify vehicles and determine parking space occupancy status without requiring intrusive hardware installations.
+
 ## Problem Statement
-In dense urban areas, on-street parking demand exceeds supply, and current meter systems often fail to align paid time with actual use. This leads to low turnover, congestion from cruising for parking, revenue leakage, and high operating costs due to manual enforcement, while intrusive street hardware harms mobility and urban aesthetics. A computer-vision–based management system is needed to measure real-time occupancy per bay and charge for actual dwell without adding physical obstacles, while collecting anonymized usage data (occupancy and dwell) to generate heat maps by street, block, and time window. These heat maps enable detection of temporal spatial hotspots, targeted enforcement, evaluation of dynamic pricing, and evidence-based mobility planning. The objective is to increase turnover and availability, improve revenue efficiency, and reduce urban impact while ensuring privacy and regulatory compliance. Success will be measured by automatic identification of ≥90% of hotspots (top 10% occupancy) by time band and strict privacy compliance no storage of faces and plates, DPIA completed, and policies approved.
+In dense urban areas, on-street parking demand exceeds supply, and current meter systems often fail to align paid time with actual use. This leads to low turnover, congestion from cruising for parking, revenue leakage, and high operating costs due to manual enforcement. A computer-vision–based management system is needed to measure real-time occupancy per bay without adding physical obstacles, while collecting anonymized usage data to generate occupancy analytics and enable data-driven urban planning.
 
-## Project Goals
-- Optimize public parking availability through real-time detection and dynamic pricing.
-- Reduce traffic congestion caused by drivers searching for parking.
-- Eliminate the need for intrusive hardware by leveraging existing camera infrastructure.
-- Enable data-driven urban policy via heatmaps and occupancy analytics.
-- Improve revenue efficiency for municipalities through usage-based billing.
-- Ensure privacy and scalability with anonymous tracking and edge-based processing.
+## Key Features
+- **Real-time Vehicle Detection**: Uses YOLOv8 for accurate vehicle detection (cars, motorcycles, buses, trucks)
+- **Interactive Zone Mapping**: Graphical tool for defining parking space boundaries on video/image frames
+- **Occupancy Analysis**: Determines parking space status based on vehicle-zone overlap
+- **Temporal Smoothing**: Reduces false positives through frame-based voting system
+- **Multiple Input Support**: Works with both video files and static images
+- **Data Export**: Generates CSV logs and JSON summaries for further analysis
+- **Visual Feedback**: Real-time visualization with colored overlays and status indicators
 
+## System Architecture
 
-## Tech Stack Overview
-This system leverages edge computing and vision-based analytics to manage public parking dynamically and non-intrusively. The stack is composed of the following layers:
-1. Hardware Layer
-- Camera Input: Commercial RTSP-compatible cameras installed in public streets.
-- Edge Devices: Embedded computers such as NVIDIA Jetson Orin or Raspberry Pi 4, responsible for local video processing.
-2. Vision Computing Layer
-- Detection Models: Real-time object detection using models like YOLOv8 or custom CNNs.
-- Tracking Algorithms: Multi-object tracking with DeepSORT or similar frameworks.
-- Inference Engine: Local logic to determine occupancy status, duration, and anonymized usage events.
-3. Data Layer
-- Event Format: Structured JSON records containing camera ID, timestamp, space ID, status, duration, and confidence score.
-- Database: PostgreSQL or TimescaleDB for structured storage; optionally InfluxDB for time-series data.
-4. API and Integration Layer
-- REST API: Built with FastAPI or Flask to expose real-time data for operations and policy systems.
-- Security: TLS encryption for data transmission; anonymized logging to preserve privacy.
-5. Visualization and Analytics Layer
-- Heatmaps: Generated using Mapbox, Leaflet.js, or D3.js to visualize occupancy patterns by time and location.
-- Dashboard Tools: Optional integration with Grafana or custom web interfaces for monitoring and decision-making.
+### Core Components
+1. **Zone Mapping Tool** (`map_parking_zones.py`)
+   - Interactive polygon editor for defining parking spaces
+   - Line detection assistance for reference alignment
+   - JSON export of parking zone coordinates
 
+2. **Occupancy Detection Engine** (`detect_occupancy.py`)
+   - YOLO-based vehicle detection
+   - Overlap calculation between detected vehicles and parking zones
+   - Temporal smoothing for stable occupancy status
+   - Real-time visualization and data logging
 
-## Phase Status
-Currently in Conception Phase
--  Abstract and system architecture defined
--  Initial UML diagrams drafted
--  Evaluating hardware options for edge deployment
--  Prototyping vision model for occupancy detection
--  Next: Simulated data ingestion and API scaffolding
+3. **Main Pipeline** (`main.py`)
+   - Orchestrates the complete workflow
+   - Automatically handles zone mapping if not present
+   - Configurable detection parameters
 
-## Risk Considerations
-This project involves real-time computer vision for parking occupancy detection. While the system is designed for high accuracy and scalability, the following technical risk has been identified:
-### Detection Reliability Risk
-- Description: The accuracy of occupancy detection depends heavily on the trained vision model and environmental conditions (e.g., lighting, occlusion, weather). In some cases, the camera feed may fail to detect vehicles or parking bay boundaries correctly.
-- Impact: Misclassification of occupancy status can lead to incorrect billing, unreliable heatmaps, and reduced trust in system performance.
-- Mitigation:
-- Train models on diverse datasets covering multiple urban scenarios.
-- Validate detection performance across different lighting and weather conditions.
-- Implement fallback logic for uncertain detections and allow for model retraining based on field data
+### Technical Stack
+- **Computer Vision**: OpenCV, YOLOv8 (Ultralytics)
+- **Machine Learning**: PyTorch (YOLO backend)
+- **Data Processing**: NumPy, Pandas
+- **Output Formats**: JSON, CSV, PNG visualizations
+- **Language**: Python 3.8+
+
+## Installation and Setup
+
+### Prerequisites
+```bash
+pip install opencv-python>=4.8.0
+pip install numpy>=1.24.0
+pip install pandas>=2.0.0
+pip install ultralytics>=8.0.0
+pip install torch>=2.0.0
+pip install pillow>=10.0.0
+pip install matplotlib>=3.7.0
+```
+
+### Quick Start
+1. **Clone the repository**
+2. **Install dependencies**: `pip install -r src/requirements.txt`
+3. **Run the system**: `python src/main.py --video [path_to_video_or_image] --display`
+
+## Usage
+
+### Basic Operation
+```bash
+# Process a video with interactive display
+python src/main.py --video parking_video.mp4 --display
+
+# Process an image and save visualization
+python src/main.py --video parking_image.jpg --save_image output.png
+
+# Use custom YOLO weights and detection parameters
+python src/main.py --video input.mp4 --weights yolov8x.pt --conf 0.5 --overlap_thr 0.8
+```
+
+### Zone Mapping (First Time Setup)
+1. Run the main script with a video/image file
+2. If no parking map exists, the zone editor will open automatically
+3. Click to define parking space boundaries (polygons)
+4. Press ENTER to close each polygon
+5. Press 'S' to save the mapping JSON
+6. Press 'Q' to exit and proceed to detection
+
+### Detection Parameters
+- `--conf`: Detection confidence threshold (default: 0.35)
+- `--overlap_thr`: Minimum overlap to consider a space occupied (default: 0.15)
+- `--history`: Temporal smoothing window size (default: 5 frames)
+- `--weights`: YOLO model weights (default: yolov8n.pt)
+
+## Output Data
+
+### JSON Summary (`occupancy_lastframe.json`)
+```json
+{
+  "ts_utc": "2025-11-10T13:32:19.362570Z",
+  "frame": 1,
+  "spots": {
+    "P1": {"status": "free", "overlap": 0.0},
+    "P2": {"status": "occupied", "overlap": 0.984}
+  }
+}
+```
+
+### CSV Log (`occupancy_log.csv`)
+Contains timestamped records with:
+- Timestamp (UTC)
+- Frame number
+- Spot ID
+- Occupancy status (free/occupied)
+- Vehicle type and confidence
+- Overlap percentage
+
+### Visualizations
+- Real-time overlay showing parking zones (green=free, red=occupied)
+- Vehicle bounding boxes with detection confidence
+- Occupancy counters and status information
+
+## Current Phase Status
+**Phase 2 - Prototype Implementation Complete**
+- ✅ Core detection system implemented
+- ✅ Interactive zone mapping tool
+- ✅ Real-time visualization
+- ✅ Data logging and export
+- ✅ Support for both video and image inputs
+- ✅ Temporal smoothing for stability
+- ✅ Vehicle tracking with unique IDs
+
+**Next Phase Goals:**
+- Integration with real-time camera streams (RTSP)
+- Database integration for persistent storage
+- Web-based dashboard for monitoring
+- API development for external integrations
+- Performance optimization for edge deployment
+
+## Technical Considerations
+
+### Detection Accuracy
+The system achieves reliable occupancy detection through:
+- Pre-trained YOLO models optimized for vehicle detection
+- Configurable overlap thresholds to handle partial occlusions
+- Temporal voting to reduce noise and false positives
+- Support for multiple vehicle classes (cars, motorcycles, buses, trucks)
+
+### Privacy and Compliance
+- No storage of vehicle identification data (license plates, faces)
+- Anonymous vehicle tracking with temporary IDs
+- Local processing without cloud dependencies
+- Configurable data retention policies
+
+### Performance Optimization
+- Efficient polygon-based zone checking
+- Optimized OpenCV operations for real-time processing
+- Scalable architecture suitable for edge deployment
+- Memory-efficient frame processing
