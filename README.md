@@ -6,44 +6,44 @@ This project implements an intelligent computer vision-based parking occupancy d
 ## Problem Statement
 In dense urban areas, on-street parking demand exceeds supply, and current meter systems often fail to align paid time with actual use. This leads to low turnover, congestion from cruising for parking, revenue leakage, and high operating costs due to manual enforcement. A computer-vision–based management system is needed to measure real-time occupancy per bay without adding physical obstacles, while collecting anonymized usage data to generate occupancy analytics and enable data-driven urban planning.
 
-## ✨ Key Features
-- **🚗 Advanced Vehicle Detection**: Uses YOLOv8 for accurate detection (cars, motorcycles, buses, trucks)
-- **🗺️ Multi-Zone Support**: Supports 4 zone types (Parking, Traffic, No-parking, Disabled)
-- **🎯 Interactive Zone Mapping**: Graphical tool with zone type selection and color coding
-- **📊 Smart Vehicle Categorization**: 5 status categories (Parked, Passing, Illegal, Partial, Unassigned)
-- **♿ Accessibility Compliance**: Proper blue coloring for disabled parking zones
-- **📈 Grid Analysis Mode**: Simplified zone counting for layout analysis
-- **🔄 Temporal Smoothing**: Reduces false positives through frame-based voting system
-- **📁 Folder-Based Processing**: Automatically processes all images in organized input folders
-- **💾 Consolidated Data Export**: Single CSV and JSON files containing all results with source identification
-- **👁️ Visual Feedback**: Real-time visualization with colored overlays and status indicators
-- **🗂️ Modular Architecture**: Split into maintainable utility and detection modules
+## Key Features
+- **Advanced Vehicle Detection**: Uses YOLOv8 for accurate detection (cars, motorcycles, buses, trucks)
+- **Multi-Zone Support**: Supports 4 zone types (Parking, Traffic, No-parking, Disabled)
+- **Interactive Zone Mapping**: Graphical tool with zone type selection and color coding
+- **Smart Vehicle Categorization**: 5 status categories (Parked, Passing, Illegal, Partial, Unassigned)
+- **Accessibility Compliance**: Proper blue coloring for disabled parking zones
+- **Grid Analysis Mode**: Simplified zone counting for layout analysis
+- **Temporal Smoothing**: Reduces false positives through frame-based voting system
+- **Folder-Based Processing**: Automatically processes all images in organized input folders
+- **Consolidated Data Export**: Single CSV and JSON files containing all results with source identification
+- **Visual Feedback**: Real-time visualization with colored overlays and status indicators
+- **Modular Architecture**: Split into maintainable utility and detection modules
 
-## 🏗️ System Architecture
+## System Architecture
 
 ### Core Components
-1. **📍 Zone Mapping Tool** (`map_parking_zones.py`)
+1. **Zone Mapping Tool** (`map_parking_zones.py`)
    - Interactive polygon editor with multi-zone support
    - Zone type selection (Keys 1-4: P/T/N/D)
    - Color-coded visualization (Green/Orange/Red/Blue)
    - Line detection assistance for reference alignment
    - JSON export with zone type metadata
 
-2. **🔧 Parking Utilities** (`parking_utils.py`)
+2. **Parking Utilities** (`parking_utils.py`)
    - Zone loading and mapping functions with backward compatibility
    - Geometric calculations (masks, areas, overlaps)
    - Data smoothing and status voting algorithms
    - File utilities and helper functions
    - Constants and vehicle class definitions
 
-3. **🚙 Vehicle Detection Engine** (`vehicle_detector.py`)
+3. **Vehicle Detection Engine** (`vehicle_detector.py`)
    - YOLO-based vehicle detection with tracking
    - Multi-zone overlap calculation and status assignment
    - Advanced visualization with status-based colors
    - Consolidated CSV/JSON logging with source identification
    - Grid analysis vs regular detection modes
 
-4. **🎛️ Main Pipeline** (`main.py`)
+4. **Main Pipeline** (`main.py`)
    - **Dual-mode operation**: Normal detection + Interactive editor
    - Smart directory detection (works from root or src)
    - Automatically handles zone mapping if not present
@@ -51,7 +51,7 @@ In dense urban areas, on-street parking demand exceeds supply, and current meter
    - Configurable detection parameters
    - Enhanced parking zone editor launcher
 
-### 🛠️ Technical Stack
+### Technical Stack
 - **Computer Vision**: OpenCV, YOLOv8 (Ultralytics)
 - **Machine Learning**: PyTorch (YOLO backend)
 - **Data Processing**: NumPy, Pandas
@@ -59,15 +59,15 @@ In dense urban areas, on-street parking demand exceeds supply, and current meter
 - **Architecture**: Modular design with separated concerns
 - **Language**: Python 3.8+
 
-### 🎨 Zone Types & Color Coding
+### Zone Types & Color Coding
 | Zone Type | Code | Purpose | Color | Usage |
 |-----------|------|---------|-------|-------|
-| **Parking** | P | Regular parking spaces | 🟢 Green | Standard vehicle parking |
-| **Traffic** | T | Traffic/driving lanes | 🟠 Orange | Vehicles passing through |
-| **No-Parking** | N | Prohibited parking areas | 🔴 Red | Violation detection |
-| **Disabled** | D | Accessibility spaces | 🔵 Blue | ADA compliant parking |
+| **Parking** | P | Regular parking spaces | Green | Standard vehicle parking |
+| **Traffic** | T | Traffic/driving lanes | Orange | Vehicles passing through |
+| **No-Parking** | N | Prohibited parking areas | Red | Violation detection |
+| **Disabled** | D | Accessibility spaces | Blue | ADA compliant parking |
 
-### 📋 Vehicle Status Categories
+### Vehicle Status Categories
 | Status | Description | Visual Indicator |
 |--------|-------------|-----------------|
 | **Parked** | Properly parked in designated zone | White box |
@@ -99,7 +99,7 @@ pip install matplotlib>=3.7.0
    - From root: `python src/main.py`
    - From src: `python main.py`
 
-## 📁 Folder Structure
+## Folder Structure
 
 ### Input Data Folders
 ```
@@ -131,7 +131,7 @@ test/results/
 
 ## Usage
 
-### 🚀 Dual-Mode Operation
+### Dual-Mode Operation
 
 **Detection Mode (Default):**
 ```bash
@@ -155,7 +155,7 @@ python src/main.py --edit --image data/inputs/parkingplace_cars1.png
 python src/main.py --edit --image data/grid_photos/parkingplace_grid.png
 ```
 
-### 🗺️ Enhanced Zone Mapping
+### Enhanced Zone Mapping
 
 **Automatic Mode (First Time Setup):**
 1. Place a reference image (empty parking lot) in `data/grid_photos/`
@@ -177,12 +177,12 @@ python src/main.py --edit --image data/grid_photos/reference_image.png
 - **Q/ESC**: Exit editor
 
 **Advanced Features:**
-- ✅ **Smart save tracking**: No redundant save prompts
-- ✅ **Zone ID management**: Change zone IDs in RENAME mode
-- ✅ **Visual feedback**: Real-time zone highlighting and type indicators
-- ✅ **Color-coded editing**: Each zone type has distinct colors
+- **Smart save tracking**: No redundant save prompts
+- **Zone ID management**: Change zone IDs in RENAME mode
+- **Visual feedback**: Real-time zone highlighting and type indicators
+- **Color-coded editing**: Each zone type has distinct colors
 
-### 🎯 Detection Modes
+### Detection Modes
 
 **Grid Analysis Mode** (`data/grid_photos/`):
 - Shows zone counts only (Parking: X, Traffic: Y, etc.)
@@ -197,12 +197,12 @@ python src/main.py --edit --image data/grid_photos/reference_image.png
 - Complete occupancy monitoring and violation detection
 
 **Path Flexibility:**
-- ✅ Works from both root directory (`python src/main.py`)
-- ✅ Works from src directory (`python main.py`)
-- ✅ Smart directory detection and path resolution
-- ✅ Cross-platform compatibility (Windows/Linux/Mac)
+- Works from both root directory (`python src/main.py`)
+- Works from src directory (`python main.py`)
+- Smart directory detection and path resolution
+- Cross-platform compatibility (Windows/Linux/Mac)
 
-### 🔄 Regular Workflow
+### Regular Workflow
 
 1. **Setup zones once**: 
    - Place reference image in `data/grid_photos/`
@@ -261,48 +261,48 @@ Contains all results with source file identification:
 - Overlap percentage
 - Record type (parking_spot/unassigned_vehicle)
 
-### 🎨 Enhanced Visualizations
+### Enhanced Visualizations
 **Zone Visualization**:
-- 🟢 **Parking zones**: Green (free) → Dark green (occupied)
-- 🟠 **Traffic zones**: Orange (always visible for reference)
-- 🔴 **No-parking zones**: Red (violation detection areas)
-- 🔵 **Disabled zones**: Blue (accessibility compliant)
+- **Parking zones**: Green (free) → Dark green (occupied)
+- **Traffic zones**: Orange (always visible for reference)
+- **No-parking zones**: Red (violation detection areas)
+- **Disabled zones**: Blue (accessibility compliant)
 
 **Vehicle Status Indicators**:
-- ⚪ **Properly parked**: White boxes with [PARKED] label
-- 🟠 **Traffic vehicles**: Orange boxes with [TRAFFIC] label
-- 🔴 **Illegal parking**: Red boxes with [NO-PARK] or [ILLEGAL] labels
-- 🟡 **Partial parking**: Yellow boxes with [PARTIAL] label
+- **Properly parked**: White boxes with [PARKED] label
+- **Traffic vehicles**: Orange boxes with [TRAFFIC] label
+- **Illegal parking**: Red boxes with [NO-PARK] or [ILLEGAL] labels
+- **Partial parking**: Yellow boxes with [PARTIAL] label
 
 **Information Overlay**:
 - **Grid Mode**: Zone counts (Parking: X, Traffic: Y, No-parking: Z, Disabled: W)
 - **Detection Mode**: Vehicle counts (Occupied, Free, Traffic, Partial, Illegal)
 - **All images saved**: Automatic visualization saving with smart filenames
 
-## 📈 Current Phase Status
-**✅ Phase 3+ - Professional Multi-Zone System Complete**
+## Current Phase Status
+**Phase 3+ - Professional Multi-Zone System Complete**
 
-**🏗️ Core System (Complete):**
-- ✅ **Multi-zone architecture** with 4 zone types (P/T/N/D)
-- ✅ **Advanced vehicle categorization** with 5 status types
-- ✅ **Interactive zone mapping** with type selection and color coding
-- ✅ **Accessibility compliance** with proper disabled parking colors
-- ✅ **Modular code architecture** split into maintainable components
-- ✅ **Grid analysis mode** for layout planning and zone counting
-- ✅ **Enhanced visualization** with status-based colors and labels
-- ✅ **Consolidated data logging** with source file identification
+**Core System (Complete):**
+- **Multi-zone architecture** with 4 zone types (P/T/N/D)
+- **Advanced vehicle categorization** with 5 status types
+- **Interactive zone mapping** with type selection and color coding
+- **Accessibility compliance** with proper disabled parking colors
+- **Modular code architecture** split into maintainable components
+- **Grid analysis mode** for layout planning and zone counting
+- **Enhanced visualization** with status-based colors and labels
+- **Consolidated data logging** with source file identification
 
-**🚀 Recent Enhancements (Complete):**
-- ✅ **Dual-mode main.py** with detection + editor modes
-- ✅ **Smart directory reorganization** (data/ for inputs, test/ for results)
-- ✅ **Cross-directory compatibility** (works from root or src)
-- ✅ **Enhanced zone editor** with ID management and rename functionality
-- ✅ **Smart save tracking** eliminates redundant save prompts
-- ✅ **Dynamic path detection** for flexible execution
-- ✅ **Always-save image results** with proper path handling
-- ✅ **Comprehensive documentation** with UML diagrams and technical specs
+**Recent Enhancements (Complete):**
+- **Dual-mode main.py** with detection + editor modes
+- **Smart directory reorganization** (data/ for inputs, test/ for results)
+- **Cross-directory compatibility** (works from root or src)
+- **Enhanced zone editor** with ID management and rename functionality
+- **Smart save tracking** eliminates redundant save prompts
+- **Dynamic path detection** for flexible execution
+- **Always-save image results** with proper path handling
+- **Comprehensive documentation** with UML diagrams and technical specs
 
-**🚀 Next Phase Goals:**
+**Next Phase Goals:**
 - Real-time camera stream integration (RTSP/IP cameras)
 - Database integration for persistent storage and analytics
 - Web-based dashboard with live monitoring
