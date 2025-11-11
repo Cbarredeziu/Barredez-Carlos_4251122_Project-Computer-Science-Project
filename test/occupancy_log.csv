@@ -1,7 +1,0 @@
-ts_utc,frame,t_ms,spot_id,status,raw_status,overlap,vehicle,vehicle_id,det_conf
-2025-11-10T13:32:19.362570Z,1,0,P1,free,free,0.0,,,
-2025-11-10T13:32:19.362570Z,1,0,P2,occupied,occupied,0.984,car,1.0,0.886
-2025-11-10T13:32:19.362570Z,1,0,P3,free,free,0.301,,,
-2025-11-10T13:32:19.362570Z,1,0,P4,occupied,occupied,0.988,truck,2.0,0.75
-2025-11-10T13:32:19.362570Z,1,0,P5,free,free,0.204,,,
-2025-11-10T13:32:19.362570Z,1,0,P6,free,free,0.0,,,

@@ -1,0 +1,115 @@
+@startuml
+title Enhanced Multi-Zone Detection System - Detailed Components
+
+package "Enhanced File System Organization" {
+  folder "data/" {
+    folder "inputs/" as car_in
+    folder "grid_photos/" as grid_in
+    note bottom : Input data separation
+  }
+  
+  folder "test/" {
+    folder "parking_grind/" as config_dir
+    folder "results/" {
+      folder "data/" as data_dir
+      folder "images/" as img_dir
+      folder "grid_results/" as grid_dir
+    }
+    note bottom : Configuration & outputs
+  }
+}
+
+package "Enhanced Processing Architecture" {
+  component "main.py\n(Dual-Mode Pipeline)" {
+    rectangle "Smart Directory Detection" as dir_detect
+    rectangle "Dynamic Path Resolution" as path_resolver
+    rectangle "Detection Mode Controller" as det_controller
+    rectangle "Editor Mode Launcher" as edit_launcher
+    rectangle "Batch File Iterator" as iterator
+    rectangle "Cross-Platform Handler" as cross_platform
+  }
+  
+  component "edit_parking_zones.py\n(Enhanced Zone Editor)" {
+    rectangle "Interactive Multi-Zone Editor" as editor_ui
+    rectangle "Zone Type Selector\n(Keys 1-4: P/T/N/D)" as zone_selector
+    rectangle "Advanced Mode Handler\n(ADD/EDIT/DELETE/RENAME)" as mode_handler
+    rectangle "Smart Save Tracker" as save_tracker
+    rectangle "Zone ID Manager" as id_manager
+    rectangle "Color-Coded Renderer" as color_render
+    rectangle "Mouse & Keyboard Handler" as input_handler
+  }
+  
+  component "parking_utils.py\n(Utility Functions)" {
+    rectangle "Zone Data Loader" as zone_loader
+    rectangle "Geometric Calculator" as geometry_calc
+    rectangle "Status Smoothing Engine" as smoothing
+    rectangle "File Utilities" as file_utils
+  }
+  
+  component "vehicle_detector.py\n(Detection Engine)" {
+    rectangle "YOLO Vehicle Processor" as yolo_proc
+    rectangle "Multi-Zone Matcher" as matcher
+    rectangle "5-Category Classifier" as classifier
+    rectangle "Enhanced Visualizer" as visualizer
+    rectangle "Consolidated Logger" as logger
+  }
+}
+
+package "Enhanced Data Flow" {
+  rectangle "Multi-Zone Processing" as multi_zone {
+    note right : 4 zone types:\nP=Parking, T=Traffic\nN=No-parking, D=Disabled
+  }
+  
+  rectangle "5-Category Vehicle Status" as categories {
+    note right : Parked, Passing, Illegal\nPartial, Unassigned
+  }
+  
+  rectangle "Dual-Mode Output" as dual_mode {
+    note right : Grid: Zone counts only\nDetection: Full vehicle status
+  }
+  
+  rectangle "Consolidated Logging" as logging {
+    note right : Source-identified results\nCSV + JSON outputs\nUnique vs overwrite modes
+  }
+}
+
+' Enhanced file system connections
+grid_in --> editor_ui : reference images for mapping
+car_in --> yolo_proc : detection images for monitoring
+config_dir <-- save_tracker : save enhanced zone data
+data_dir <-- logger : consolidated CSV/JSON results
+img_dir <-- visualizer : regular detection images
+grid_dir <-- visualizer : grid analysis images
+
+' Dual-mode component interactions
+dir_detect --> path_resolver : detect execution context
+path_resolver --> det_controller : resolve data/test paths
+path_resolver --> edit_launcher : resolve editor paths
+det_controller --> grid_in : scan for reference images
+det_controller --> car_in : scan for detection images
+edit_launcher --> editor_ui : launch interactive editor
+iterator --> det_controller : batch processing queue
+det_controller --> zone_loader : load existing zones
+det_controller --> yolo_proc : process detection images
+
+' Enhanced multi-zone editor workflow
+editor_ui --> zone_selector : select zone type (Keys 1-4)
+zone_selector --> mode_handler : advanced editing modes
+mode_handler --> id_manager : zone ID management
+id_manager --> color_render : apply zone colors
+color_render --> input_handler : handle user interactions
+input_handler --> save_tracker : smart save tracking
+
+' Utility integration
+zone_loader --> geometry_calc : load zone definitions
+geometry_calc --> smoothing : geometric calculations
+smoothing --> file_utils : status processing utilities
+
+' Enhanced detection workflow
+yolo_proc --> matcher : vehicle detection results
+matcher --> classifier : multi-zone overlap analysis
+classifier --> visualizer : 5-category status assignment
+visualizer --> logger : enhanced visualizations
+logger --> multi_zone : consolidated data logging
+
+@enduml
