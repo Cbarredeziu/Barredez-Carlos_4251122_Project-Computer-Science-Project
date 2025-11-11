@@ -1,115 +1,65 @@
 @startuml
-title Enhanced Multi-Zone Detection System - Detailed Components
+title Multi-Zone Detection System - Components
 
-package "Enhanced File System Organization" {
+package "File Organization" {
   folder "data/" {
     folder "inputs/" as car_in
     folder "grid_photos/" as grid_in
-    note bottom : Input data separation
   }
   
   folder "test/" {
     folder "parking_grind/" as config_dir
-    folder "results/" {
-      folder "data/" as data_dir
-      folder "images/" as img_dir
-      folder "grid_results/" as grid_dir
-    }
-    note bottom : Configuration & outputs
+    folder "results/" as results_dir
   }
 }
 
-package "Enhanced Processing Architecture" {
-  component "main.py\n(Dual-Mode Pipeline)" {
-    rectangle "Smart Directory Detection" as dir_detect
-    rectangle "Dynamic Path Resolution" as path_resolver
-    rectangle "Detection Mode Controller" as det_controller
-    rectangle "Editor Mode Launcher" as edit_launcher
-    rectangle "Batch File Iterator" as iterator
-    rectangle "Cross-Platform Handler" as cross_platform
+package "Core Components" {
+  component "main.py" as main_comp {
+    rectangle "Detection Mode" as det_mode
+    rectangle "Editor Mode" as edit_mode
   }
   
-  component "edit_parking_zones.py\n(Enhanced Zone Editor)" {
-    rectangle "Interactive Multi-Zone Editor" as editor_ui
-    rectangle "Zone Type Selector\n(Keys 1-4: P/T/N/D)" as zone_selector
-    rectangle "Advanced Mode Handler\n(ADD/EDIT/DELETE/RENAME)" as mode_handler
-    rectangle "Smart Save Tracker" as save_tracker
-    rectangle "Zone ID Manager" as id_manager
-    rectangle "Color-Coded Renderer" as color_render
-    rectangle "Mouse & Keyboard Handler" as input_handler
+  component "edit_parking_zones.py" as editor_comp {
+    rectangle "Zone Editor" as editor_ui
+    rectangle "Zone Types (P/T/N/D)" as zone_types
+    rectangle "Save Tracking" as save_track
   }
   
-  component "parking_utils.py\n(Utility Functions)" {
-    rectangle "Zone Data Loader" as zone_loader
-    rectangle "Geometric Calculator" as geometry_calc
-    rectangle "Status Smoothing Engine" as smoothing
-    rectangle "File Utilities" as file_utils
+  component "parking_utils.py" as utils_comp {
+    rectangle "Zone Loader" as zone_loader
+    rectangle "Geometry Functions" as geometry
   }
   
-  component "vehicle_detector.py\n(Detection Engine)" {
-    rectangle "YOLO Vehicle Processor" as yolo_proc
-    rectangle "Multi-Zone Matcher" as matcher
-    rectangle "5-Category Classifier" as classifier
-    rectangle "Enhanced Visualizer" as visualizer
-    rectangle "Consolidated Logger" as logger
+  component "vehicle_detector.py" as detector_comp {
+    rectangle "YOLO Detection" as yolo_proc
+    rectangle "Zone Analysis" as zone_analysis
+    rectangle "Result Logger" as logger
   }
 }
 
-package "Enhanced Data Flow" {
-  rectangle "Multi-Zone Processing" as multi_zone {
-    note right : 4 zone types:\nP=Parking, T=Traffic\nN=No-parking, D=Disabled
-  }
-  
-  rectangle "5-Category Vehicle Status" as categories {
-    note right : Parked, Passing, Illegal\nPartial, Unassigned
-  }
-  
-  rectangle "Dual-Mode Output" as dual_mode {
-    note right : Grid: Zone counts only\nDetection: Full vehicle status
-  }
-  
-  rectangle "Consolidated Logging" as logging {
-    note right : Source-identified results\nCSV + JSON outputs\nUnique vs overwrite modes
-  }
+package "Data Processing" {
+  rectangle "Multi-Zone Support" as multi_zone
+  rectangle "Vehicle Classification" as classification
+  rectangle "Output Generation" as output_gen
 }
 
-' Enhanced file system connections
-grid_in --> editor_ui : reference images for mapping
-car_in --> yolo_proc : detection images for monitoring
-config_dir <-- save_tracker : save enhanced zone data
-data_dir <-- logger : consolidated CSV/JSON results
-img_dir <-- visualizer : regular detection images
-grid_dir <-- visualizer : grid analysis images
+' File connections
+grid_in --> editor_ui : reference images
+car_in --> yolo_proc : detection images
+config_dir --> zone_loader : zone configuration
+results_dir --> logger : save results
 
-' Dual-mode component interactions
-dir_detect --> path_resolver : detect execution context
-path_resolver --> det_controller : resolve data/test paths
-path_resolver --> edit_launcher : resolve editor paths
-det_controller --> grid_in : scan for reference images
-det_controller --> car_in : scan for detection images
-edit_launcher --> editor_ui : launch interactive editor
-iterator --> det_controller : batch processing queue
-det_controller --> zone_loader : load existing zones
-det_controller --> yolo_proc : process detection images
+' Component interactions
+main_comp --> editor_comp : editor mode
+main_comp --> detector_comp : detection mode
+editor_comp --> utils_comp : zone operations
+detector_comp --> utils_comp : load zones
 
-' Enhanced multi-zone editor workflow
-editor_ui --> zone_selector : select zone type (Keys 1-4)
-zone_selector --> mode_handler : advanced editing modes
-mode_handler --> id_manager : zone ID management
-id_manager --> color_render : apply zone colors
-color_render --> input_handler : handle user interactions
-input_handler --> save_tracker : smart save tracking
-
-' Utility integration
-zone_loader --> geometry_calc : load zone definitions
-geometry_calc --> smoothing : geometric calculations
-smoothing --> file_utils : status processing utilities
-
-' Enhanced detection workflow
-yolo_proc --> matcher : vehicle detection results
-matcher --> classifier : multi-zone overlap analysis
-classifier --> visualizer : 5-category status assignment
-visualizer --> logger : enhanced visualizations
-logger --> multi_zone : consolidated data logging
+' Processing flow
+zone_loader --> geometry : zone data
+yolo_proc --> zone_analysis : detection results
+zone_analysis --> classification : categorize vehicles
+classification --> output_gen : generate results
+output_gen --> logger : save outputs
 
 @enduml

@@ -1,82 +1,53 @@
 @startuml
-title Enhanced Multi-Zone Parking Detection - Data Flow (Level 1)
+title Multi-Zone Parking Detection - Data Flow
 
 actor "User" as user
 
-rectangle "Reorganized Input Management" {
-  folder "data/grid_photos/\n(Zone Mapping)" as grid_folder
-  folder "data/inputs/\n(Vehicle Detection)" as input_folder
-  note right of grid_folder : Reference images for\nmulti-zone mapping
-  note right of input_folder : Car images for\noccupancy monitoring
-  note bottom : Enhanced data organization\nwith clear input separation
+rectangle "Input Data" {
+  folder "data/grid_photos/" as grid_folder
+  folder "data/inputs/" as input_folder
 }
 
-rectangle "Enhanced System Core" {
-  rectangle "Enhanced Zone Editor\n(edit_parking_zones.py)" as editor
-  rectangle "Utility Functions\n(parking_utils.py)" as utils
-  rectangle "Dual-Mode Pipeline\n(main.py)" as main
-  rectangle "Detection Engine\n(vehicle_detector.py)" as detect
-  note bottom : Smart directory detection\nand dual-mode operation
+rectangle "System Processing" {
+  rectangle "Zone Editor" as editor
+  rectangle "Main Pipeline" as main
+  rectangle "Vehicle Detector" as detect
+  rectangle "Utilities" as utils
 }
 
-rectangle "Enhanced Configuration" {
-  folder "test/parking_grind/\n(Zone Storage)" as config_folder
-  database "Multi-Zone JSON\n(P/T/N/D types)" as json
-  database "Color-Coded Visualization" as zone_vis
-  note right of json : Enhanced format with\nzone types and metadata\nSmart save tracking
+rectangle "Configuration" {
+  database "Zone Map JSON" as json
+  database "Zone Visualization" as zone_vis
 }
 
-rectangle "Enhanced Output Management" {
-  folder "test/results/data/\n(All Data Files)" as data_folder
-  folder "test/results/images/\n(Detection Images)" as img_folder
-  folder "test/results/grid_results/\n(Grid Images)" as grid_folder_out
-  
-  database "Detection CSV Log\n(occupancy_log.csv)" as csv
-  database "Detection JSON Summary\n(occupancy_summary.json)" as json_summary
-  database "Grid Analysis CSV\n(grid_analysis_log.csv)" as grid_csv
-  database "Grid Analysis Summary\n(grid_analysis_summary.json)" as grid_json
-  database "Always-Saved Visualizations\n(Dynamic Paths)" as result_images
-  
-  note right of result_images : Grid mode: Zone counts\nDetection mode: Vehicle status\nAlways saved with proper paths
+rectangle "Output Results" {
+  database "Detection CSV" as csv
+  database "Detection JSON" as json_summary
+  database "Result Images" as result_images
 }
 
-' Enhanced user interactions
-user --> grid_folder : place reference images
-user --> input_folder : place detection images  
-user --> main : run enhanced system
+' User workflow
+user --> grid_folder : add reference images
+user --> input_folder : add detection images  
+user --> main : run system
 
-' Enhanced multi-zone editing flow
-grid_folder --> editor : launch editor (auto or --edit)
-editor --> utils : use utility functions
-utils --> editor : zone loading & geometry
-editor --> json : save enhanced zone data with smart tracking
-editor --> zone_vis : save color-coded visualization
-json --> config_folder
-zone_vis --> config_folder
+' Zone creation flow
+grid_folder --> editor : create zones
+editor --> utils : zone operations
+editor --> json : save zones
+editor --> zone_vis : save visualization
 
-' Dual-mode pipeline flow
-main --> editor : create multi-zones if needed (detection mode)
-main --> editor : launch interactive editor (--edit mode)
-main --> utils : load utility functions
-main --> detect : process images with enhanced detection
-config_folder --> utils : load zone configuration
-utils --> detect : provide zone data and utilities
+' Detection flow
+main --> detect : process images
+input_folder --> detect : vehicle images
+json --> detect : load zones
+detect --> csv : save results
+detect --> json_summary : save summary
+detect --> result_images : save visualizations
 
-' Dual-mode detection flow
-input_folder --> detect : vehicle detection mode
-grid_folder --> detect : grid analysis mode
-detect --> csv : detection results
-detect --> json_summary : detection summaries
-detect --> grid_csv : grid analysis results  
-detect --> grid_json : grid analysis summaries
-detect --> result_images : enhanced visualizations
-
-' Organized output management
-csv --> data_folder
-json_summary --> data_folder
-grid_csv --> data_folder
-grid_json --> data_folder
-result_images --> img_folder : detection visualizations
-result_images --> grid_folder_out : grid analysis visualizations
+' System integration
+main --> editor : editor mode
+utils --> editor : support functions
+utils --> detect : support functions
 
 @enduml

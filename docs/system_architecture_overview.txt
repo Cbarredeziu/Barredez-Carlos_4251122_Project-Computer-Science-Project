@@ -1,131 +1,62 @@
 @startuml
-title Enhanced Multi-Zone Parking Detection System - Architecture Overview
+title Multi-Zone Parking Detection System - Architecture
 
 actor "User" as user
 
-package "Enhanced Input Layer" {
+package "Input Data" {
   folder "data/grid_photos/" as grid
   folder "data/inputs/" as inputs
-  note right of grid : Reference images\n(zone mapping)
-  note right of inputs : Detection images\n(vehicle monitoring)
-  note bottom of grid : Reorganized for\nbetter data separation
+  note right of grid : Reference images
+  note right of inputs : Detection images
 }
 
-package "Enhanced Processing Layer" {
-  component "Dual-Mode Main Pipeline\n(main.py)" as main {
-    rectangle "Smart Directory Detection" as dir_detect
-    rectangle "Detection Mode" as det_mode
-    rectangle "Interactive Editor Mode" as edit_mode
-    rectangle "Dynamic Path Resolution" as paths
-    rectangle "Batch Processor" as processor
-    rectangle "Workflow Orchestrator" as orchestrator
-  }
-  
-  component "Enhanced Zone Editor\n(edit_parking_zones.py)" as mapping {
-    rectangle "Multi-Zone Editor UI" as editor
-    rectangle "Zone Type Selection\n(Keys 1-4: P/T/N/D)" as zone_types
-    rectangle "Advanced Editing Modes\n(ADD/EDIT/DELETE/RENAME)" as edit_modes
-    rectangle "Smart Save Tracking" as save_track
-    rectangle "Zone ID Management" as id_mgmt
-    rectangle "Color-Coded Visualization" as colors
-    rectangle "Interactive Polygon Creator" as polygon
-  }
-  
-  component "Parking Utilities\n(parking_utils.py)" as utils {
-    rectangle "Zone Loading & Mapping" as load_zones
-    rectangle "Geometric Calculations" as geometry
-    rectangle "Status Smoothing" as smoothing
-    rectangle "File Utilities" as file_utils
-  }
-  
-  component "Vehicle Detection\n(vehicle_detector.py)" as detection {
-    rectangle "YOLO Vehicle Detection" as yolo
-    rectangle "Multi-Zone Overlap Analysis" as overlap
-    rectangle "5-Category Status Assignment" as categorization
-    rectangle "Enhanced Visualization" as vis_engine
-    rectangle "Data Logging System" as logging
-  }
+package "Core Components" {
+  component "Main Pipeline\n(main.py)" as main
+  component "Zone Editor\n(edit_parking_zones.py)" as mapping
+  component "Utilities\n(parking_utils.py)" as utils
+  component "Vehicle Detector\n(vehicle_detector.py)" as detection
 }
 
-package "Configuration Layer" {
-  folder "test/parking_grind/" as config
-  database "Enhanced Zone Map\n(parking_map.json)" as map_json
-  note right of map_json : Multi-zone support\nP/T/N/D types\nBackward compatibility
-  database "Color-Coded Visualization\n(zones_visualization.png)" as map_img
+package "Configuration" {
+  database "Zone Map\n(parking_map.json)" as map_json
+  database "Zone Visualization\n(zones_visualization.png)" as map_img
 }
 
-package "Enhanced Output Layer" {
-  folder "test/results/data/" as data_out
-  folder "test/results/images/" as img_out
-  folder "test/results/grid_results/" as grid_out
-  
-  database "Consolidated Detection\n(occupancy_log.csv)" as csv_log
+package "Output Results" {
+  database "Detection Log\n(occupancy_log.csv)" as csv_log
   database "Detection Summary\n(occupancy_summary.json)" as json_out
-  database "Grid Analysis\n(grid_analysis_log.csv)" as grid_csv
-  database "Grid Summary\n(grid_analysis_summary.json)" as grid_json
-  database "Enhanced Visualizations\n(status-based colors)" as vis_imgs
-  
-  note right of vis_imgs : Grid mode: Zone counts\nDetection mode: Full status\nColor-coded by vehicle type
+  database "Result Images" as vis_imgs
 }
 
-package "External Dependencies" {
-  component "YOLOv8 Model" as model
+package "External Tools" {
+  component "YOLOv8" as model
   component "OpenCV" as opencv
-  component "Pandas" as pandas
 }
 
-' User interactions
-user --> grid : add reference images
-user --> inputs : add detection images
-user --> main : execute dual-mode pipeline
+' Main workflow
+user --> main : execute system
+main --> detection : normal mode (default)
+main --> mapping : editor mode (--edit)
 
-' Dual-mode workflow
-main --> dir_detect : detect execution context
-dir_detect --> paths : resolve data/test paths
-paths --> det_mode : normal detection (default)
-paths --> edit_mode : interactive editor (--edit flag)
-det_mode --> processor : batch processing
-edit_mode --> mapping : enhanced zone editor
-processor --> utils : load utilities
-utils --> detection : enhanced detection
+' Zone creation
+grid --> mapping : create zones
+mapping --> map_json : save zones
+mapping --> map_img : save visualization
 
-' Multi-zone mapping
-grid --> mapping : reference for zone creation
-mapping --> zone_types : select zone type (1-4 keys)
-zone_types --> editor : interactive polygon definition  
-editor --> colors : color-coded visualization
-colors --> map_json : save enhanced zone data
-colors --> map_img : save visualization
-map_json --> config
-map_img --> config
+' Detection process
+inputs --> detection : process images
+map_json --> detection : load zones
+detection --> csv_log : save results
+detection --> json_out : save summary
+detection --> vis_imgs : save images
 
-' Enhanced detection processing
-inputs --> detection : vehicle detection images
-grid --> detection : grid analysis mode
-config --> utils : load zone definitions
-utils --> detection : provide utilities
-detection --> yolo : vehicle detection
-yolo --> overlap : multi-zone overlap analysis
-overlap --> categorization : 5-category status assignment
-categorization --> vis_engine : enhanced visualization
-vis_engine --> logging : consolidated logging
-logging --> csv_log : log all results
-logging --> json_out : detection summaries
-logging --> grid_csv : grid analysis results
-logging --> grid_json : grid summaries
-logging --> vis_imgs : enhanced visualizations
-
-' Enhanced output organization
-csv_log --> data_out
-json_out --> data_out
-grid_csv --> data_out
-grid_json --> data_out
-vis_imgs --> img_out : regular detection visualizations
-vis_imgs --> grid_out : grid analysis visualizations
+' Utilities
+utils --> mapping : support functions
+utils --> detection : support functions
 
 ' External dependencies
-model --> yolo : vehicle detection
+model --> detection : vehicle detection
 opencv --> detection : image processing
-pandas --> detection : data handling
+opencv --> mapping : zone editing
 
 @enduml
