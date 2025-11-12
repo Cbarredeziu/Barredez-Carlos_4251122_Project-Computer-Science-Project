@@ -32,9 +32,26 @@ Thumbs.db
 *.temp
 *.log
 
-# Output files (optional - uncomment if you don't want to track these)
-# *.csv
-# *.json
-# *.png
-# *.jpg
-# *.jpeg
+# Test codes (exclude from git - for personal use only)
+src/test_evaluation.py
+src/test_refactor.py
+src/test_image_saving.py
+src/analyze_occupancy_data.py
+
+# Documentation text files (exclude from git)
+docs/*.txt
+
+# Test results and evaluation outputs
+test/results/
+test/evaluation/
+
+# Generated data files
+*.csv
+*.json
+!test/test_config_*.json
+!test/parking_grind/parking_map.json
+
+# Generated images
+test/results/images/
+test/results/grid_results/
+test/evaluation/plots/

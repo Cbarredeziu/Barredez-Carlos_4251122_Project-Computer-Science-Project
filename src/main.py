@@ -16,14 +16,17 @@ def main():
     # Detection parameters
     ap.add_argument("--weights", default="yolov8x.pt", help="YOLO weights (e.g. yolov8n.pt or yolo11n.pt)")
     ap.add_argument("--conf", type=float, default=0.35, help="Minimum detection confidence")
-    ap.add_argument("--overlap_thr", type=float, default=0.6, help="Minimum overlap (fraction) to mark as occupied")
+    ap.add_argument("--overlap_thr", type=float, default=0.7, help="Minimum overlap (fraction) to mark as occupied")
     ap.add_argument("--history", type=int, default=5, help="Temporal smoothing window (frames)")
     ap.add_argument("--display", action="store_true", help="Show visualization in window")
     ap.add_argument("--no_save_image", action="store_true", help="Disable saving visualization images")
+    ap.add_argument("--no_blur", action="store_true", help="Disable vehicle blurring (blur is enabled by default for privacy)")
     args = ap.parse_args()
     
     # Always save images by default, unless --no_save_image is specified
     args.save_image = not args.no_save_image
+    # Always blur vehicles by default for privacy, unless --no_blur is specified
+    args.blur_vehicles = not args.no_blur
 
     # Check if edit mode is requested
     if args.edit:
@@ -181,7 +184,8 @@ def main():
                 json_out=json_out,
                 display=args.display,
                 save_image=args.save_image,
-                results_dir=results_dir
+                results_dir=results_dir,
+                blur_vehicles=args.blur_vehicles
             )
     
     # Process grid photos (reference/mapping images)
@@ -207,7 +211,8 @@ def main():
                 json_out=json_out,
                 display=args.display,
                 save_image=args.save_image,
-                results_dir=results_dir
+                results_dir=results_dir,
+                blur_vehicles=args.blur_vehicles
             )
     
     # Show information if no files found

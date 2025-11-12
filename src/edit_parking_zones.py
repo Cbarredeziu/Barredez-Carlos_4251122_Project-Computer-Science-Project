@@ -395,9 +395,20 @@ class EnhancedParkingZoneEditor:
         """Handle zone type selection keys (1-4)"""
         type_map = {ord('1'): 'P', ord('2'): 'T', ord('3'): 'N', ord('4'): 'D'}
         if key in type_map:
-            self.current_zone_type = type_map[key]
-            zone_name = self.zone_types[self.current_zone_type]["name"]
-            print(f"Selected zone type: {self.current_zone_type} ({zone_name})")
+            new_type = type_map[key]
+            
+            # If a zone is selected, change its type
+            if self.selected_zone_id and self.selected_zone_id in self.zones:
+                old_type = self.zones[self.selected_zone_id]["type"]
+                self.zones[self.selected_zone_id]["type"] = new_type
+                self.zones[self.selected_zone_id]["zone_name"] = self.zone_types[new_type]["name"]
+                print(f"Changed zone {self.selected_zone_id} from {old_type} ({self.zone_types[old_type]['name']}) to {new_type} ({self.zone_types[new_type]['name']})")
+            else:
+                # No zone selected, just change the type for new zones
+                self.current_zone_type = new_type
+                zone_name = self.zone_types[new_type]["name"]
+                print(f"Selected zone type for new zones: {new_type} ({zone_name})")
+            
             return True
         return False
     
@@ -442,10 +453,21 @@ class EnhancedParkingZoneEditor:
             
             key = cv2.waitKey(1) & 0xFF
             
+            # Handle text input first (when renaming)
+            if self.handle_text_input(key):
+                continue
+            
             if key in [27, ord('q'), ord('Q')]:  # ESC or Q
                 break
             elif key == ord(' '):  # SPACE - change mode
                 self.cycle_mode()
+            elif key == ord('i') or key == ord('I'):  # I - change ID
+                if self.selected_zone_id:
+                    self.input_mode = "rename"
+                    self.input_text = self.selected_zone_id
+                    print(f"Renaming zone {self.selected_zone_id} - type new ID and press Enter")
+                else:
+                    print("No zone selected for renaming")
             elif key == ord('s') or key == ord('S'):  # Save
                 if self.map_path:
                     self.save_map(self.map_path)
@@ -460,6 +482,8 @@ class EnhancedParkingZoneEditor:
                 print("Reset current zone")
             elif key == ord('h') or key == ord('H'):  # Toggle help
                 self.show_help = not self.show_help
+            elif self.handle_zone_type_key(key):  # Handle zone type keys (1-4)
+                pass  # Already handled in the method
         
         cv2.destroyAllWindows()
 

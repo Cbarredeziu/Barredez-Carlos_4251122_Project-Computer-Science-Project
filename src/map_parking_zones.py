@@ -39,6 +39,7 @@ class PolygonEditor:
             "D": {"name": "disabled", "color": (255, 0, 0), "prefix": "D"}      # Blue for disabled (accessibility standard)
         }
         self.current_zone_type = "P"  # Default to parking zones
+        self.show_help = False  # Toggle for showing full menu
 
     def mouse(self, event, x, y, flags, param):
         if event == cv2.EVENT_LBUTTONDOWN:
@@ -64,23 +65,46 @@ class PolygonEditor:
             for p in self.curr_pts:
                 cv2.circle(self.show, p, 4, current_color, -1)
 
-        # Enhanced HUD with zone type selection
-        hud_height = 80
-        cv2.rectangle(self.show, (0,0), (self.w, hud_height), (0,0,0), -1)
-        
-        # Main controls
-        hud1 = "[LMB] points  [ENTER] close  [U] undo  [N] new  [S] save JSON  [Q] quit"
-        cv2.putText(self.show, hud1, (8,18), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 1, cv2.LINE_AA)
-        
-        # Zone type controls
-        hud2 = "Zone Types: [1] Parking  [2] Traffic  [3] No-Parking  [4] Disabled"
-        cv2.putText(self.show, hud2, (8,38), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 1, cv2.LINE_AA)
-        
-        # Current zone type indicator
-        current_zone_name = self.zone_types[self.current_zone_type]["name"]
-        current_color = self.zone_types[self.current_zone_type]["color"]
-        hud3 = f"Current Zone Type: {current_zone_name.upper()}"
-        cv2.putText(self.show, hud3, (8,58), cv2.FONT_HERSHEY_SIMPLEX, 0.5, current_color, 2, cv2.LINE_AA)
+        # Minimal HUD - only show current zone type and help hint
+        if self.show_help:
+            # Show full menu
+            hud_height = 80
+            cv2.rectangle(self.show, (0,0), (self.w, hud_height), (0,0,0), -1)
+            
+            # Main controls
+            hud1 = "[LMB] points  [ENTER] close  [U] undo  [N] new  [S] save JSON  [Q] quit  [H] hide menu"
+            cv2.putText(self.show, hud1, (8,18), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 1, cv2.LINE_AA)
+            
+            # Zone type controls
+            hud2 = "Zone Types: [1] Parking  [2] Traffic  [3] No-Parking  [4] Disabled"
+            cv2.putText(self.show, hud2, (8,38), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 1, cv2.LINE_AA)
+            
+            # Current zone type indicator
+            current_zone_name = self.zone_types[self.current_zone_type]["name"]
+            current_color = self.zone_types[self.current_zone_type]["color"]
+            hud3 = f"Current Zone Type: {current_zone_name.upper()}"
+            cv2.putText(self.show, hud3, (8,58), cv2.FONT_HERSHEY_SIMPLEX, 0.5, current_color, 2, cv2.LINE_AA)
+        else:
+            # Minimal overlay - only current zone type at top-right corner
+            current_zone_name = self.zone_types[self.current_zone_type]["name"]
+            current_color = self.zone_types[self.current_zone_type]["color"]
+            text = f"Zone: {current_zone_name.upper()} [H for help]"
+            
+            # Get text size to create background box
+            (text_width, text_height), baseline = cv2.getTextSize(text, cv2.FONT_HERSHEY_SIMPLEX, 0.6, 2)
+            
+            # Position at top-right corner
+            x_pos = self.w - text_width - 15
+            y_pos = 25
+            
+            # Semi-transparent background
+            overlay = self.show.copy()
+            cv2.rectangle(overlay, (x_pos - 5, y_pos - text_height - 5), 
+                         (x_pos + text_width + 5, y_pos + baseline + 5), (0, 0, 0), -1)
+            self.show = cv2.addWeighted(overlay, 0.6, self.show, 0.4, 0)
+            
+            # Draw text
+            cv2.putText(self.show, text, (x_pos, y_pos), cv2.FONT_HERSHEY_SIMPLEX, 0.6, current_color, 2, cv2.LINE_AA)
 
     def close_current(self):
         if len(self.curr_pts) >= 3:
@@ -143,6 +167,9 @@ def map_parking_zones(video_path, out_path="test/parking_grind/parking_map.json"
             elif editor.polygons:
                 editor.polygons.pop()
                 editor.next_id = max(1, len(editor.polygons)+1)
+            editor.redraw()
+        elif key in (ord('h'), ord('H')):  # Toggle help menu
+            editor.show_help = not editor.show_help
             editor.redraw()
         elif key == ord('1'):  # Parking zones
             editor.current_zone_type = "P"
