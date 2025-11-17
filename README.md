@@ -1,4 +1,4 @@
-# Advanced Parking Occupancy Detection System
+# Parking control system using computer vision and convolutional neural network models for object detection.
 
 ## Overview
 This project implements an intelligent computer vision-based parking occupancy detection system that monitors parking spaces in real-time using video feeds or static images. The system uses YOLOv8 for accurate vehicle detection and features multi-zone support for complex parking environments including traffic lanes, no-parking zones, and accessibility compliance.
