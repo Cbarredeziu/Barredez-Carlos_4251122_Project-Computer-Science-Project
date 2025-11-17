@@ -5,3 +5,5 @@ ultralytics>=8.0.0  # For YOLO object detection
 torch>=2.0.0        # Required by ultralytics
 pillow>=10.0.0      # Required for image processing
 matplotlib>=3.7.0   # For visualization
+scikit-learn>=1.3.0 # For evaluation metrics (confusion matrix, F1-score, precision, recall)
+seaborn>=0.12.0     # For enhanced confusion matrix heatmaps

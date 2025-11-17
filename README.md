@@ -7,7 +7,7 @@ This project implements an intelligent computer vision-based parking occupancy d
 In dense urban areas, on-street parking demand exceeds supply, and current meter systems often fail to align paid time with actual use. This leads to low turnover, congestion from cruising for parking, revenue leakage, and high operating costs due to manual enforcement. A computer-vision–based management system is needed to measure real-time occupancy per bay without adding physical obstacles, while collecting anonymized usage data to generate occupancy analytics and enable data-driven urban planning.
 
 ## Key Features
-- **Advanced Vehicle Detection**: Uses YOLOv8 for accurate detection (cars, motorcycles, buses, trucks)
+- **Advanced Vehicle Detection**: Uses YOLOv11 for accurate detection (cars, motorcycles, buses, trucks)
 - **Multi-Zone Support**: Supports 4 zone types (Parking, Traffic, No-parking, Disabled)
 - **Interactive Zone Mapping**: Graphical tool with zone type selection and color coding
 - **Smart Vehicle Categorization**: 5 status categories (Parked, Passing, Illegal, Partial, Unassigned)
@@ -43,7 +43,15 @@ In dense urban areas, on-street parking demand exceeds supply, and current meter
    - Consolidated CSV/JSON logging with source identification
    - Grid analysis vs regular detection modes
 
-4. **Main Pipeline** (`main.py`)
+4. **Evaluation & Analytics** (`analyze_occupancy_data.py`)
+   - **Ground truth comparison** against test configurations
+   - **Binary classification metrics**: Accuracy, Precision, Recall, F1-Score
+   - **Multi-class vehicle type metrics**: Per-class and macro/weighted averages
+   - **Confusion matrices**: Binary (Occupied vs Free) and Multi-class (Vehicle Types)
+   - **Performance visualization**: Metrics charts, error analysis, per-class breakdown
+   - **Comprehensive reporting**: JSON metrics export and detailed console summaries
+
+5. **Main Pipeline** (`main.py`)
    - **Dual-mode operation**: Normal detection + Interactive editor
    - Smart directory detection (works from root or src)
    - Automatically handles zone mapping if not present
@@ -52,9 +60,11 @@ In dense urban areas, on-street parking demand exceeds supply, and current meter
    - Enhanced parking zone editor launcher
 
 ### Technical Stack
-- **Computer Vision**: OpenCV, YOLOv8 (Ultralytics)
+- **Computer Vision**: OpenCV, YOLOv11 (Ultralytics)
 - **Machine Learning**: PyTorch (YOLO backend)
 - **Data Processing**: NumPy, Pandas
+- **Evaluation Metrics**: scikit-learn (Classification metrics, Confusion matrices)
+- **Visualization**: Matplotlib, Seaborn (Enhanced heatmaps)
 - **Output Formats**: JSON, CSV, PNG visualizations
 - **Architecture**: Modular design with separated concerns
 - **Language**: Python 3.8+
@@ -87,6 +97,8 @@ pip install ultralytics>=8.0.0
 pip install torch>=2.0.0
 pip install pillow>=10.0.0
 pip install matplotlib>=3.7.0
+pip install scikit-learn>=1.3.0
+pip install seaborn>=0.12.0
 ```
 
 ### Quick Start
@@ -125,7 +137,15 @@ test/results/
 │   ├── occupancy_log.csv           # All input detection results
 │   ├── occupancy_summary.json      # All input summaries by file
 │   ├── grid_analysis_log.csv       # All grid analysis results
-│   └── grid_analysis_summary.json  # All grid summaries by file
+│   ├── grid_analysis_summary.json  # All grid summaries by file
+│   ├── matched_detections_*.csv    # Ground truth comparison results
+│   ├── evaluation_metrics_*.json   # Evaluation metrics (F1, precision, recall)
+│   └── plots/                      # Evaluation visualizations
+│       ├── confusion_matrix_binary_*.png      # Binary classification matrix
+│       ├── confusion_matrix_multiclass_*.png  # Vehicle type classification matrix
+│       ├── performance_metrics_*.png          # Metrics comparison charts
+│       ├── per_class_metrics_*.png            # Per-vehicle-type performance
+│       └── error_analysis_*.png               # TP/TN/FP/FN breakdown
 └── grid_results/         # Grid-specific visualization images
 ```
 
@@ -219,11 +239,64 @@ python src/main.py --edit --image data/grid_photos/reference_image.png
 
 5. **Edit zones anytime**: Use `--edit` mode to modify existing zones
 
+### Evaluation and Testing
+
+**Run System Evaluation:**
+```bash
+# Evaluate detection performance against ground truth test configuration
+python src/analyze_occupancy_data.py --csv test/results/data/occupancy_log.csv --test_config test/test_config_20_tests.json --output_dir test/results/data
+```
+
+**Evaluation Features:**
+- **Binary Classification Metrics**: Measures occupancy detection accuracy (Free vs Occupied)
+  - Accuracy, Precision, Recall, F1-Score
+  - Confusion matrix with TP/TN/FP/FN breakdown
+  
+- **Multi-class Classification Metrics**: Evaluates vehicle type detection
+  - Per-class metrics (Car, Truck, Bus, Motorcycle)
+  - Macro and weighted F1-scores
+  - Detailed confusion matrix for all vehicle types
+
+- **Visual Analytics**:
+  - Confusion matrix heatmaps (binary and multi-class)
+  - Performance metrics comparison charts
+  - Per-class precision/recall/F1-score breakdown
+  - Error analysis visualization
+
+**Test Configuration Format:**
+Create test cases in JSON format with ground truth labels:
+```json
+{
+  "description": "Test configuration for parking detection system evaluation",
+  "version": "1.0",
+  "tests": [
+    {
+      "test_id": "test_001",
+      "source_file": "test_001.png",
+      "description": "Test case description",
+      "matrix": [
+        ["P25:car", "P26:free", "P27:truck", "P28:free", "P29:car", "P30:bus"],
+        ["P19:car", "P20:free", "P21:free", "P22:free", "P23:car", "P24:free"]
+      ],
+      "expected_occupied": 12,
+      "expected_free": 18
+    }
+  ]
+}
+```
+
+**Evaluation Output:**
+- `matched_detections_*.csv`: Detailed ground truth vs prediction comparison
+- `evaluation_metrics_*.json`: Complete metrics in JSON format
+- `plots/confusion_matrix_*.png`: Visual confusion matrices
+- `plots/performance_metrics_*.png`: Metrics comparison charts
+- Console summary with accuracy, F1-scores, and per-class breakdown
+
 ### Detection Parameters
 - `--conf`: Detection confidence threshold (default: 0.35)
 - `--overlap_thr`: Minimum overlap to consider a space occupied (default: 0.15)
 - `--history`: Temporal smoothing window size (default: 5 frames)
-- `--weights`: YOLO model weights (default: yolov8n.pt)
+- `--weights`: YOLO model weights (default: yolo11x.pt, options: yolo11n.pt, yolo11s.pt, yolo11m.pt, yolo11l.pt, yolo11x.pt)
 
 ## Output Data
 
@@ -280,7 +353,7 @@ Contains all results with source file identification:
 - **All images saved**: Automatic visualization saving with smart filenames
 
 ## Current Phase Status
-**Phase 3+ - Professional Multi-Zone System Complete**
+**Phase 4 - Evaluation & Testing Framework Complete**
 
 **Core System (Complete):**
 - **Multi-zone architecture** with 4 zone types (P/T/N/D)
@@ -292,6 +365,25 @@ Contains all results with source file identification:
 - **Enhanced visualization** with status-based colors and labels
 - **Consolidated data logging** with source file identification
 
+**Evaluation Framework (New - Complete):**
+- **Ground truth testing** with JSON-based test configurations
+- **Binary classification metrics** (Occupied vs Free detection)
+  - Accuracy, Precision, Recall, F1-Score
+  - Confusion matrix with detailed breakdown
+- **Multi-class metrics** (Vehicle type classification)
+  - Per-class performance (Car, Truck, Bus, Motorcycle)
+  - Macro and weighted averaging
+  - Multi-class confusion matrix
+- **Visual analytics dashboard**:
+  - Confusion matrix heatmaps (binary & multi-class)
+  - Performance metrics comparison charts
+  - Per-class breakdown visualizations
+  - Error analysis (TP/TN/FP/FN)
+- **Comprehensive reporting**:
+  - JSON metrics export
+  - Matched detections CSV
+  - Console summary with detailed statistics
+
 **Recent Enhancements (Complete):**
 - **Dual-mode main.py** with detection + editor modes
 - **Smart directory reorganization** (data/ for inputs, test/ for results)
@@ -301,6 +393,8 @@ Contains all results with source file identification:
 - **Dynamic path detection** for flexible execution
 - **Always-save image results** with proper path handling
 - **Comprehensive documentation** with UML diagrams and technical specs
+- **Automated evaluation pipeline** with scikit-learn integration
+- **Professional visualization** with seaborn heatmaps
 
 **Next Phase Goals:**
 - Real-time camera stream integration (RTSP/IP cameras)

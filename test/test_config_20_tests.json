@@ -1,0 +1,81 @@
+{
+  "description": "Test configuration for parking detection system evaluation - 5 test cases",
+  "version": "1.0",
+  "tests": [
+    {
+      "test_id": "test_001",
+      "source_file": "test_001.png",
+      "description": "Original configuration - 12 occupied spots",
+      "matrix": [
+        ["P25:car", "P26:free", "P27:truck", "P28:free", "P29:car", "P30:bus"],
+        ["P19:car", "P20:free", "P21:free", "P22:free", "P23:car", "P24:free"],
+        ["P13:free", "P14:car", "P15:free", "P16:truck", "P17:free", "P18:free"],
+        ["P7:free", "P8:car", "P9:motorcycle", "P10:free", "P11:free", "P12:free"],
+        ["P1:free", "P2:free", "P3:car", "P4:car", "P5:free", "P6:free"]
+      ],
+      "transit_zone": "T31",
+      "expected_occupied": 12,
+      "expected_free": 18
+    },
+    {
+      "test_id": "test_002",
+      "source_file": "test_002.png",
+      "description": "Shifted right - 12 occupied spots",
+      "matrix": [
+        ["P25:free", "P26:car", "P27:free", "P28:truck", "P29:free", "P30:bus"],
+        ["P19:free", "P20:car", "P21:free", "P22:free", "P23:free", "P24:car"],
+        ["P13:car", "P14:free", "P15:car", "P16:free", "P17:truck", "P18:free"],
+        ["P7:free", "P8:free", "P9:car", "P10:motorcycle", "P11:free", "P12:free"],
+        ["P1:free", "P2:car", "P3:free", "P4:car", "P5:free", "P6:free"]
+      ],
+      "transit_zone": "T31",
+      "expected_occupied": 12,
+      "expected_free": 18
+    },
+    {
+      "test_id": "test_003",
+      "source_file": "test_003.png",
+      "description": "Clustered left - 12 occupied spots",
+      "matrix": [
+        ["P25:car", "P26:truck", "P27:car", "P28:bus", "P29:free", "P30:free"],
+        ["P19:car", "P20:car", "P21:car", "P22:free", "P23:free", "P24:free"],
+        ["P13:car", "P14:free", "P15:truck", "P16:free", "P17:free", "P18:free"],
+        ["P7:motorcycle", "P8:car", "P9:free", "P10:free", "P11:free", "P12:free"],
+        ["P1:free", "P2:free", "P3:free", "P4:free", "P5:free", "P6:free"]
+      ],
+      "transit_zone": "T31",
+      "expected_occupied": 12,
+      "expected_free": 18
+    },
+    {
+      "test_id": "test_004",
+      "source_file": "test_004.png",
+      "description": "Clustered right - 12 occupied spots",
+      "matrix": [
+        ["P25:free", "P26:free", "P27:car", "P28:truck", "P29:car", "P30:bus"],
+        ["P19:free", "P20:free", "P21:free", "P22:car", "P23:car", "P24:car"],
+        ["P13:free", "P14:free", "P15:free", "P16:truck", "P17:car", "P18:free"],
+        ["P7:free", "P8:free", "P9:free", "P10:free", "P11:car", "P12:motorcycle"],
+        ["P1:free", "P2:free", "P3:free", "P4:free", "P5:car", "P6:car"]
+      ],
+      "transit_zone": "T31",
+      "expected_occupied": 12,
+      "expected_free": 18
+    },
+    {
+      "test_id": "test_005",
+      "source_file": "test_005.png",
+      "description": "Diagonal pattern - 12 occupied spots",
+      "matrix": [
+        ["P25:car", "P26:free", "P27:free", "P28:free", "P29:free", "P30:bus"],
+        ["P19:free", "P20:car", "P21:truck", "P22:free", "P23:free", "P24:free"],
+        ["P13:free", "P14:free", "P15:free", "P16:car", "P17:free", "P18:free"],
+        ["P7:free", "P8:free", "P9:free", "P10:free", "P11:free", "P12:car"],
+        ["P1:car", "P2:free", "P3:car", "P4:truck", "P5:car", "P6:motorcycle"]
+      ],
+      "transit_zone": "T31",
+      "expected_occupied": 12,
+      "expected_free": 18
+    }
+  ]
+}

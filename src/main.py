@@ -14,7 +14,7 @@ def main():
     ap.add_argument("--edit", action="store_true", help="Launch parking zone editor instead of detection")
     ap.add_argument("--image", help="Image file for parking zone editor (required with --edit)")
     # Detection parameters
-    ap.add_argument("--weights", default="yolov8x.pt", help="YOLO weights (e.g. yolov8n.pt or yolo11n.pt)")
+    ap.add_argument("--weights", default="yolo11x.pt", help="YOLO weights (e.g. yolo11n.pt, yolo11x.pt)")
     ap.add_argument("--conf", type=float, default=0.35, help="Minimum detection confidence")
     ap.add_argument("--overlap_thr", type=float, default=0.7, help="Minimum overlap (fraction) to mark as occupied")
     ap.add_argument("--history", type=int, default=5, help="Temporal smoothing window (frames)")

@@ -17,7 +17,7 @@ from parking_utils import (
     status_smoother_factory, vote_status, get_unique_filename
 )
 
-def detect_occupancy(video_path, map_path, weights="yolov8n.pt",
+def detect_occupancy(video_path, map_path, weights="yolo11x.pt",
                      conf=0.35, overlap_thr=0.15, history=5,
                      csv_out="../test/occupancy_log.csv", json_out="../test/occupancy_lastframe.json",
                      display=False, save_image=True, results_dir="../test/results", blur_vehicles=False):
