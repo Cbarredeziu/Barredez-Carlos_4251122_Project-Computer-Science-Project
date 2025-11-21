@@ -60,7 +60,7 @@ def mask_from_bbox(xyxy, shape_hw):
     if x2 > x1 and y2 > y1:
         m[y1:y2, x1:x2] = 255
     return m
-
+#test comment
 def polygon_area(mask):
     """Calculate area of a polygon from its mask"""
     return int((mask>0).sum())
