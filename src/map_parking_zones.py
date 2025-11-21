@@ -212,7 +212,7 @@ def map_parking_zones(video_path, out_path="test/parking_grind/parking_map.json"
             break
 
     cv2.destroyAllWindows()
-
+# Command-line interface
 def _cli():
     ap = argparse.ArgumentParser(description="Parking zone editor -> JSON")
     ap.add_argument("--video", required=True, help="Path to video/image")
